@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LISTADO DE DULCERIA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  	<style>
+	body{
+		background-color: darkseagreen;
+	}
+	#myTable{
+		background-color: white;	
+	}
+	</style>
+  </head>
+  <body>
+	<div align="center" th:if="${successful != null}" th:text="${successful}" class="alert alert-success"></div><br/>
+	<div align="center" th:if="${mensaje != null}" th:text="${mensaje}" class="alert alert-danger"></div>
+    <div class="container">
+    	<h4 align="center">Listado de Dulceria</h4>
+    	<br/>
+    	<div>
+			<a href="/cargarDulceria" class="btn btn-primary">Nuevo Snack</a>
+    		<a href="/MenuPrincipal" class="btn btn-primary">Volver al Menu</a>
+		</div><br/>
+    	<table class="table table-striped table-hover" id="myTable">
+    		<thead class="table-dark">
+    			<tr>
+					<th scope="col">ID</th>
+    				<th scope="col">Descripción</th>
+    				<th scope="col">Cantidad</th>
+    				<th scope="col">Precio</th>
+    				<th scope="col">Tipo de Snack</th>
+    				<th>Opción</th>
+    				<th>Opción</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			<tr th:each="d : ${lstDulceria}">
+    				<td th:text="${d.idDulceria}"></td>
+    				<td th:text="${d.desDulceria}"></td>
+    				<td th:text="${d.cantDulceria}"></td>
+    				<td th:text="${d.preDulceria}"></td>
+    				<td th:text="${d.tipoDulceria.desTipoDulceria}"></td>
+    				<td>
+    					<button type="button" class="btn btn-warning updatebtn">Editar</button>
+    				</td>
+    				<td>
+						<button type="button" class="btn btn-danger deletebtn">Eliminar</button>
+    				</td>
+    			</tr>
+    		</tbody>
+    	</table>
+    </div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+	  
+	  <!-- MODAL ACTUALIZAR DULCERIA-->
+	  <div class="modal fade" id="actualizarModal" tabindex="-1" aria-labelledby="actualizarModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="actualizarModalLabel">Actualizar Dulceria</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      	<form  th:action="@{/actualizarDulceria}" th:object="${dulceria}" method="post">
+		      <div class="modal-body">
+				<div class="form-group">
+					<label for="inputIdDulceria">ID</label>
+					<input th:field="*{idDulceria}" class="form-control" id="inputIdDulceria" th:value="${dulceria.idDulceria}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputDesDulceria">Descripción</label>
+					<input th:field="*{desDulceria}" class="form-control" id="inputDesDulceria" th:value="${dulceria.desDulceria}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputCantDulceria">Cantidad</label>
+					<input th:field="*{cantDulceria}" class="form-control" id="inputCantDulceria" th:value="${dulceria.cantDulceria}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputPreDulceria">Precio</label>
+					<input th:field="*{preDulceria}" class="form-control" id="inputPreDulceria" th:value="${dulceria.preDulceria}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputTipoDulceria">Tipo de Snack</label>
+					<select id="inputTipoDulceria" class="form-control" th:field="*{tipoDulceria.idTipoDulceria}">
+					    <option th:value="-1" th:text="Seleccione" disabled></option>
+					    <option th:each="t : ${lstTiposDulceria}"
+					            th:value="${t.idTipoDulceria}"
+					            th:text="${t.desTipoDulceria}"
+					            selected="${t.desTipoDulceria}"
+					    </option>
+					</select>
+				</div>
+		      </div>
+		      <div class="modal-footer">
+		          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+		          <button type="submit" name="updatedata" class="btn btn-primary">Actualizar</button>
+		      </div>
+		     </form>
+	    </div>
+	  </div>
+	  </div>
+	  
+	  <!-- MODAL ELIMINAR DULCERIA-->
+	  <div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="eliminarModalLabel">Eliminar Pelicula</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      	<form  th:action="@{/eliminarDulceria}" method="post">
+		      <div class="modal-body">
+				 <input type="hidden" name="idDulceria" id="idDulceria">
+				  <span id="dulceria"></span>
+		      </div>
+		      <div class="modal-footer">
+		          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+		          <button type="submit" name="deletedata" class="btn btn-primary">Eliminar</button>
+		      </div>
+		     </form>
+	    </div>
+	  </div>
+	  </div>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	
+	<!-- SCRIPT ACTUALIZAR DULCERIA -->
+  	<script>
+		$(document).ready(function(){
+			$('.updatebtn').on('click', function(){
+				$('#actualizarModal').modal('show');
+				$tr = $(this).closest('tr');
+				var data = $tr.children("td").map(function(){
+					return $(this).text();
+				}).get();
+				$('#inputIdDulceria').val(data[0]);
+				$('#inputDesDulceria').val(data[1]);
+				$('#inputCantDulceria').val(data[2]);
+				$('#inputPreDulceria').val(data[3]);
+				$('#inputTipoDulceria option:contains("' + data[4] + '")').prop('selected', true);						        
+					})
+				});
+				  
+	</script>
+	
+	<!-- SCRIPT ELIMINAR DULCERIA -->
+  	<script>
+		$(document).ready(function(){
+			$('.deletebtn').on('click', function(){
+				$('#eliminarModal').modal('show');
+				$tr = $(this).closest('tr');
+				var data = $tr.children("td").map(function(){
+					return $(this).text();
+				}).get();
+				console.log(data);
+				$('#idDulceria').val(data[0]);
+				$('#dulceria').text("¿Está seguro de eliminar el snack: "+data[1]+"?");
+			})
+		});	  
+	</script>
+  
+  </body>
+</html>

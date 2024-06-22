@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Menu - Cine Buena Vista</title>
+    <style>
+        /* Estilos CSS para el menú */
+        body{
+			background-color: darkseagreen;
+		}
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333; /* Color de fondo del menú */
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white; /* Color del texto del menú */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #555; /* Color de fondo al pasar el mouse sobre un enlace */
+        }
+    </style>
+</head>
+<body>
+	<div align="center" th:if="${mensaje != null}" class="alert alert-danger">
+		<strong><p style="color: black;text-transform: uppercase;" th:text="${mensaje}"></p></strong>
+	</div><br/>
+	<h1 align="center">Menu de Opciones - Cine Buena Vista</h1>
+
+	<ul>
+    <li><a class="btn btn-primary" href="/listarUsuario">Usuarios</a></li>
+    <li><a class="btn btn-primary" href="/listarCliente">Clientes</a></li>
+    <li><a class="btn btn-primary" href="/listarPelicula">Peliculas</a></li>
+    <li><a class="btn btn-primary" href="/listarFuncion">Funciones</a></li>
+    <!--<li><a class="btn btn-primary" href="/listarDulceria">Dulceria</a></li>-->
+    <li><a class="btn btn-primary" href="/listarBoleta">Boleta</a></li>
+	</ul>
+
+</body>
+</html>

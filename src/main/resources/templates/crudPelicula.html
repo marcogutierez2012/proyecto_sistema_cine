@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset= "utf-8">
+<title>Registro de Peliculas</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  	<style>
+	body{
+		background-color: darkseagreen;
+	}
+	#myTable{
+		background-color: white;	
+	}
+	</style>
+</head>
+<body>
+	<div align="center" th:if="${mensaje != null}" class="alert alert-danger">
+		<p th:text="${mensaje}"></p>
+	</div><br/>
+	<div align="center">
+		<h2 align="center">Registro de Peliculas</h2><br/>
+		<img src="/imagenes/pelicula.png" style="height: 250px;width: 250px;border-radius: 25%;">
+	</div><br/>
+	<div class="container">
+		<form th:action="@{/grabarPelicula}" th:object="${pelicula}" method="post">
+			<div class="row">
+				<div class="col-md-6">
+				<label for="inputTitPelicula">Titulo</label>
+				<input th:field="*{titPelicula}" class="form-control" id="inputTitPelicula" th:value="${pelicula.titPelicula}" required>
+				</div>
+				<div class="col-md-6">
+					<label for="inputDirPelicula">Director</label>
+					<input th:field="*{dirPelicula}" class="form-control" id="inputDirPelicula" th:value="${pelicula.dirPelicula}" required>
+				</div>
+			</div>
+			<div class="form-group col-md-6">
+				<label for="inputDurPelicula">Duración</label>
+				<input th:field="*{durPelicula}" class="form-control" id="inputDurPelicula" th:value="${pelicula.durPelicula}" required>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<label for="inputSinPelicula">Sinópsis</label>
+					<input th:field="*{sinPelicula}" class="form-control" id="inputSinPelicula" th:value="${pelicula.sinPelicula}" required>
+				</div>
+				<div class="col-md-6">
+					<label for="inputFecEstPelicula">Fecha de estreno</label>
+					<input type="date" th:field="*{fecestPelicula}" class="form-control" name="fecestPelicula" id="inputFecEstPelicula" th:value="${pelicula.fecestPelicula}" required>
+				</div>
+			</div>
+			<div class="form-group col-md-4">
+					<label for="inputGenero">Genero</label>
+					<select id="inputGenero" class="form-control" th:field="*{genero.idGenero}">
+						<option th:value="-1" th:text="Seleccione"></option>
+						<option th:each="g:${lstGeneros}"
+								th:value="${g.idGenero}"
+								th:text="${g.desGenero}">
+						</option>
+					</select>
+			</div><br/>
+				<button type="submit" class="btn btn-primary">Registrar</button>
+				<a href="/listarPelicula" class="btn btn-primary">Listar</a>
+		</form>
+		</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    var errorField = /*[[${errorField}]]*/ 'titPelicula';
+    var inputField = document.getElementById('input' + errorField.charAt(0).toUpperCase() + errorField.slice(1));
+    
+    inputField.focus();
+    
+    inputField.value = '';
+</script>
+</body>
+</html>

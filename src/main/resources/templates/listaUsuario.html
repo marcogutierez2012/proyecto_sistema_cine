@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LISTADO DE USUARIOS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  	<style>
+	body{
+		background-color: darkseagreen;
+	}
+	#myTable{
+		background-color: white;	
+	}
+	</style>
+	<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #myTable, #myTable * {
+            visibility: visible;
+        }
+
+        #myTable {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .opciones{
+			display: none;
+		}
+    }
+</style>
+  </head>
+  <body>
+	<div align="center" th:if="${successful != null}" th:text="${successful}" class="alert alert-success"></div><br/>
+    <div class="container">
+    	<h4 align="center"><strong>Listado de Usuarios</strong></h4>
+    	<br/>
+    	<div>
+			<a href="/cargarUsuario" class="btn btn-primary">Nuevo Usuario</a>
+    		<a href="/MenuPrincipal" class="btn btn-primary">Volver al Menu</a>
+		</div><br/>
+		<div class="row">
+		<div class="col-md-3">
+			<button type="button" class="btn btn-success" onclick="imprimirTabla()">Imprimir</button>
+		</div>
+		<div class="col-md-3 ms-auto">
+
+			<form th:action="@{/listarUsuario}" method="get" class="d-flex">
+	        	<input name="search" class="form-control me-2" placeholder="Buscar" type="search" th:value="${search}">
+	        	<button type="submit" class="btn btn-primary">Buscar</button>
+	    	</form>
+		</div>
+		</div><br/>
+    	<table class="table table-striped table-hover" id="myTable">
+    		<thead class="table-dark">
+    			<tr>
+					<th scope="col">ID</th>
+					<th scope="col">DNI</th>
+    				<th scope="col">Nombre</th>
+    				<th scope="col">Apellido</th>
+    				<th scope="col">Teléfono</th>
+    				<th scope="col">Correo</th>
+    				<th scope="col">Contraseña</th>
+    				<th scope="col">Rol</th>
+    				<th class="opciones">Opción</th>
+    				<th class="opciones">Opción</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			<tr th:each="u : ${lstUsuarios}">
+    				<td th:text="${u.idUsuario}"></td>
+    				<td th:text="${u.dniUsuario}"></td>
+    				<td th:text="${u.nomUsuario}"></td>
+    				<td th:text="${u.apeUsuario}"></td>
+    				<td th:text="${u.telefono}"></td>
+    				<td th:text="${u.email}"></td>
+    				<td th:text="${u.password}"></td>
+    				<td th:text="${u.rol.desRol}"></td>
+    				<td>
+    					<button type="button" class="btn btn-warning updatebtn opciones">Editar</button>
+    				</td>
+    				<td>
+						<button type="button" class="btn btn-danger deletebtn opciones">Eliminar</button>
+    				</td>
+    			</tr>
+    		</tbody>
+    	</table>
+    </div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+	  
+	  <!-- MODAL ACTUALIZAR USUARIO-->
+	  <div class="modal fade" id="actualizarModal" tabindex="-1" aria-labelledby="actualizarModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="actualizarModalLabel">Actualizar Usuario</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      	<form  th:action="@{/actualizarUsuario}" th:object="${usuario}" method="post">
+		      <div class="modal-body">
+				<div class="form-group">
+					<label for="inputIdUsuario">ID</label>
+					<input th:field="*{idUsuario}" class="form-control" id="inputIdUsuario" th:value="${usuario.idUsuario}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputDniUsuario">DNI</label>
+					<input th:field="*{dniUsuario}" class="form-control" id="inputDniUsuario" th:value="${usuario.dniUsuario}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputNomUsuario">Nombre</label>
+					<input th:field="*{nomUsuario}" class="form-control" id="inputNomUsuario" th:value="${usuario.nomUsuario}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputApeUsuario">Apellido</label>
+					<input th:field="*{apeUsuario}" class="form-control" id="inputApeUsuario" th:value="${usuario.apeUsuario}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputTelefono">Teléfono</label>
+					<input th:field="*{telefono}" class="form-control" id="inputTelefono" th:value="${usuario.telefono}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputCorreo">Correo</label>
+					<input th:field="*{email}" class="form-control" id="inputCorreo" th:value="${usuario.email}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputContrasenia">Contraseña</label>
+					<input th:field="*{password}" class="form-control" id="inputContrasenia" th:value="${usuario.password}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputRol">Rol</label>
+					<select id="inputRol" class="form-control" th:field="*{rol.idRol}">
+					    <option th:value="-1" th:text="Seleccione" disabled></option>
+					    <option th:each="r : ${lstRoles}"
+					            th:value="${r.idRol}"
+					            th:text="${r.desRol}"
+					            selected="${r.desRol}"
+					    </option>
+					</select>
+				</div>
+		      </div>
+		      <div class="modal-footer">
+		          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+		          <button type="submit" name="updatedata" class="btn btn-primary">Actualizar</button>
+		      </div>
+		     </form>
+	    </div>
+	  </div>
+	  </div>
+	  
+	  <!-- MODAL ELIMINAR USUARIO-->
+	  <div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="editarModalLabel">Eliminar Usuario</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      	<form  th:action="@{/eliminarUsuario}" method="post">
+		      <div class="modal-body">
+				 <input type="hidden" name="idUsuario" id="idUsuario">
+				  <span id="nombreUsuario"></span>
+		      </div>
+		      <div class="modal-footer">
+		          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancelar </button>
+		          <button type="submit" name="deletedata" class="btn btn-primary">Eliminar</button>
+		      </div>
+		     </form>
+	    </div>
+	  </div>
+	  </div>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	
+	<!-- SCRIPT ACTUALIZAR USUARIO -->
+	<script>
+    function imprimirTabla() {
+        window.print();
+    }
+	</script>
+  	<script>
+		$(document).ready(function(){
+			$('.updatebtn').on('click', function(){
+				$('#actualizarModal').modal('show');
+				$tr = $(this).closest('tr');
+				var data = $tr.children("td").map(function(){
+					return $(this).text();
+				}).get();
+				$('#inputIdUsuario').val(data[0]);
+				$('#inputDniUsuario').val(data[1]);
+				$('#inputNomUsuario').val(data[2]);
+				$('#inputApeUsuario').val(data[3]);
+				$('#inputTelefono').val(data[4]);
+				$('#inputCorreo').val(data[5]);
+				$('#inputContrasenia').val(data[6]);
+				$('#inputRol option:contains("' + data[7] + '")').prop('selected', true);			        
+					})
+				});
+	</script>
+	
+	<!-- SCRIPT ELIMINAR USUARIO -->
+  	<script>
+		$(document).ready(function(){
+			$('.deletebtn').on('click', function(){
+				$('#eliminarModal').modal('show');
+				$tr = $(this).closest('tr');
+				var data = $tr.children("td").map(function(){
+					return $(this).text();
+				}).get();
+				console.log(data);
+				$('#idUsuario').val(data[0]);
+				$('#nombreUsuario').text("¿Está seguro de eliminar al usuario: "+data[2]+" "+data[3]+"?");
+			})
+		});	  
+	</script>
+  
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LISTADO DE PELICULAS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  	<style>
+	body{
+		background-color: darkseagreen;
+	}
+	#myTable{
+		background-color: white;	
+	}
+	</style>
+	<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #myTable, #myTable * {
+            visibility: visible;
+        }
+
+        #myTable {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .opciones{
+			display: none;
+		}
+    }
+</style>
+  </head>
+  <body>
+	<div align="center" th:if="${successful != null}" th:text="${successful}" class="alert alert-success"></div><br/>
+	<div align="center" th:if="${mensaje != null}" th:text="${mensaje}" class="alert alert-warning"></div>
+    <div class="container">
+    	<h4 align="center"><strong>Listado de Peliculas</strong></h4>
+    	<br/>
+    	<div>
+			<a href="/cargarPelicula" class="btn btn-primary">Nueva Pelicula</a>
+    		<a href="/MenuPrincipal" class="btn btn-primary">Volver al Menu</a>	
+		</div><br/>
+		<div class="row">
+		<div class="col-md-3">
+			<button type="button" class="btn btn-success" onclick="imprimirTabla()">Imprimir</button>
+		</div>
+		<div class="col-md-3 ms-auto">
+
+			<form th:action="@{/listarPelicula}" method="get" class="d-flex">
+	        	<input name="search" class="form-control me-2" placeholder="Buscar" type="search" th:value="${search}">
+	        	<button type="submit" class="btn btn-primary">Buscar</button>
+	    	</form>
+		</div>
+		</div><br/>
+    	<table class="table table-striped table-hover" id="myTable">
+    		<thead class="table-dark">
+    			<tr>
+					<th scope="col">ID</th>
+    				<th scope="col">Titúlo</th>
+    				<th scope="col">Director</th>
+    				<th scope="col">Duración</th>
+    				<th scope="col">Sinopsis</th>
+    				<th scope="col">Fecha de Estreno</th>
+    				<th scope="col">Genero</th>
+    				<th class="opciones">Opción</th>
+    				<th class="opciones">Opción</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			<tr th:each="p : ${lstPeliculas}">
+    				<td th:text="${p.idPelicula}"></td>
+    				<td th:text="${p.titPelicula}"></td>
+    				<td th:text="${p.dirPelicula}"></td>
+    				<td th:text="${p.durPelicula}"></td>
+    				<td th:text="${p.sinPelicula}"></td>
+    				<td th:text="${#dates.format(p.fecestPelicula, 'dd/MM/yyyy')}"></td>
+    				<td th:text="${p.genero.desGenero}"></td>
+    				<td>
+    					<button type="button" class="btn btn-warning updatebtn opciones">Editar</button>
+    				</td>
+    				<td>
+						<button type="button" class="btn btn-danger deletebtn opciones">Eliminar</button>
+    				</td>
+    			</tr>
+    		</tbody>
+    	</table>
+    </div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+	  
+	  <!-- MODAL ACTUALIZAR PELICULA-->
+	  <div class="modal fade" id="actualizarModal" tabindex="-1" aria-labelledby="actualizarModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="actualizarModalLabel">Actualizar Pelicula</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      	<form  th:action="@{/actualizarPelicula}" th:object="${pelicula}" method="post">
+		      <div class="modal-body">
+				<div class="form-group">
+					<label for="inputIdPelicula">ID</label>
+					<input th:field="*{idPelicula}" class="form-control" id="inputIdPelicula" th:value="${pelicula.idPelicula}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputTitPelicula">Titúlo</label>
+					<input th:field="*{titPelicula}" class="form-control" id="inputTitPelicula" th:value="${pelicula.titPelicula}" readonly required>
+				</div>
+				<div class="form-group">
+					<label for="inputDirPelicula">Director</label>
+					<input th:field="*{dirPelicula}" class="form-control" id="inputDirPelicula" th:value="${pelicula.dirPelicula}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputDurPelicula">Duración</label>
+					<input th:field="*{durPelicula}" class="form-control" id="inputDurPelicula" th:value="${pelicula.durPelicula}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputSinPelicula">Sinopsis</label>
+					<input th:field="*{sinPelicula}" class="form-control" id="inputSinPelicula" th:value="${pelicula.sinPelicula}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputFecEstPelicula">Fecha de Estreno</label>
+					<input type="date" th:field="*{fecestPelicula}" class="form-control" id="inputFecEstPelicula" th:value="${pelicula.fecestPelicula}" required>
+				</div>
+				<div class="form-group">
+					<label for="inputGenero">Genero</label>
+					<select id="inputGenero" class="form-control" th:field="*{genero.idGenero}">
+					    <option th:value="-1" th:text="Seleccione" disabled></option>
+					    <option th:each="g : ${lstGeneros}"
+					            th:value="${g.idGenero}"
+					            th:text="${g.desGenero}"
+					            selected="${g.desGenero}"
+					    </option>
+					</select>
+				</div>
+		      </div>
+		      <div class="modal-footer">
+		          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+		          <button type="submit" name="updatedata" class="btn btn-primary">Actualizar</button>
+		      </div>
+		     </form>
+	    </div>
+	  </div>
+	  </div>
+	  
+	  <!-- MODAL ELIMINAR PELICULA-->
+	  <div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="eliminarModalLabel">Eliminar Pelicula</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      	<form  th:action="@{/eliminarPelicula}" method="post">
+		      <div class="modal-body">
+				 <input type="hidden" name="idPelicula" id="idPelicula">
+				  <span id="pelicula"></span>
+		      </div>
+		      <div class="modal-footer">
+		          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+		          <button type="submit" name="deletedata" class="btn btn-primary">Eliminar</button>
+		      </div>
+		     </form>
+	    </div>
+	  </div>
+	  </div>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script>
+    function imprimirTabla() {
+        window.print();
+    }
+	</script>
+	<!-- SCRIPT ACTUALIZAR PELICULA -->
+  	<script>
+		$(document).ready(function(){
+			$('.updatebtn').on('click', function(){
+				$('#actualizarModal').modal('show');
+				$tr = $(this).closest('tr');
+				var data = $tr.children("td").map(function(){
+					return $(this).text();
+				}).get();
+				$('#inputIdPelicula').val(data[0]);
+				$('#inputTitPelicula').val(data[1]);
+				$('#inputDirPelicula').val(data[2]);
+				$('#inputDurPelicula').val(data[3]);
+				$('#inputSinPelicula').val(data[4]);
+
+				var fechaParts = data[5].split("/");
+        		if (fechaParts.length === 3) {
+            		var fechaFormateada = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
+            		$('#inputFecEstPelicula').val(fechaFormateada);
+        		} else {
+            		$('#inputFecEstPelicula').val('');
+        		}
+				$('#inputGenero option:contains("' + data[6] + '")').prop('selected', true);
+						        
+					})
+				});
+				  
+	</script>
+	
+	<!-- SCRIPT ELIMINAR PELICULA -->
+  	<script>
+		$(document).ready(function(){
+			$('.deletebtn').on('click', function(){
+				$('#eliminarModal').modal('show');
+				$tr = $(this).closest('tr');
+				var data = $tr.children("td").map(function(){
+					return $(this).text();
+				}).get();
+				console.log(data);
+				$('#idPelicula').val(data[0]);
+				$('#pelicula').text("¿Está seguro de eliminar la pelicula: "+data[1]+"?");
+			})
+		});	  
+	</script>
+  
+  </body>
+</html>
